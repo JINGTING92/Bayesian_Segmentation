@@ -1,26 +1,20 @@
-// ========================================================================= //
-//                                                                           //
-// Filename: ImageAnalyser.h											     //
-//                                                                           //
-// Author: Fraunhofer Institut für Graphische Datenverarbeitung (IGD)        //
-// Abteilung 7: Cognitive Computing & Medical Imaging                        //
-// Fraunhoferstr. 5                                                          //
-// 64283 Darmstadt, Germany                                                  //
-//                                                                           //
-// Rights: Copyright (c) 2009 by Fraunhofer Gesellschaft.                    //
-// All rights reserved.                                                      //
-// Fraunhofer Gesellschaft provides this product without warranty of any     //
-// kind and shall not be liable for any damages caused by the use            //
-// of this product.                                                          //
-// ========================================================================= //
-//																			 //
-// Short description:														 //
-// Class for searching points of interests in an image						 //
-// ------------------------------------------------------------------------- //
-//																			 //
-// Creation Date :	15.06.2009	Marius Erdt	                                 //
-//                                                                           //
-// ========================================================================= //
+// ==================================================================== //
+//																		//
+// Filename: ImageAnalyser.h					        			    //
+//																		//
+// Author:	Fraunhofer Singapore 			                //
+//																		//
+// ===================================================================	//
+//																		//
+// Short description:													//
+// Provides functionality for searching points of interest in an image	//
+// -------------------------------------------------------------------	//
+//																		//
+// Creation Date	: 15.06.2009	Marius Erdt							//
+// Modified     	: 10.08.2009	Marius Erdt							//
+//												
+// Modified             : 2017-2018     JINGTING MA
+// ===================================================================	//
 
 #pragma once
 
@@ -84,7 +78,6 @@
 #include "itkBinaryFillholeImageFilter.h"
 #include "itkBinaryCrossStructuringElement.h"
 #include "itkBinaryThresholdImageFilter.h"
-
 #include <itkMedianImageFilter.h>
 #include "itkResampleImageFilter.h"
 #include <itkNearestNeighborInterpolateImageFunction.h>
