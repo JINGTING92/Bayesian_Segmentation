@@ -213,80 +213,6 @@ public:
 protected slots:
 
 
-	/**
-	 * @brief		Select an image node from storage to use as fix image in registration
-	 *				Checks whether the node already has an "id" (integer property of the node).
-	 *				The id is necessary for remembering the processing state of each node.
-	 * @param node_	the new node that has been selected
-	 */
-	void FixImageSelectedForReg(const mitk::DataNode * node_);
-
-
-	/**
-	 * @brief		Resampling input images to make the same spacing
-	 *				Comment code is used for registration
-	 * @param       Resampling the pixel with 2.0 by default
-	 *              Rescaling the intensity to [0, 255]
-	 *
-	 */
-	void LoadAndResampleImage();
-
-
-	/**
-	 *  @brief   compute GMM of the ROI and NOI 
-	 */
-	void ComputeGMM(); 
-
-
-     // ****** Deep Learning Utilities ****** //
-     /**
-      *  @brief   load 3d images to generate 2d slices of jpg 
-      *  @param   select the mode of slices 
-      */
-     void LoadImagesForSliceGeneration(); 
-
-
-	 /**
-	  * @brief   Normalize the mask images to 0 / 1
-	  */
-	 void NormalizeMask();
-
-
-	 /**
-	  *  @brief   Load SA Slices and Merge to a 3D-ITK image with dimension 256 x 256 x 256  
-	  */
-	 void LoadAndMergeSASlices(); 
-
-
-	 /**
-	  *  @brief   Load SC Slices and Merge to a 3D-ITK image with dimension 256 x 256 x 256
-	  */
-	 void LoadAndMergeSCSlices();
-
-
-	 /**
-	  *  @brief   Load CA Slices and Merge to a 3D-ITK image with dimension 256 x 256 x 256
-	  */
-	 void LoadAndMergeCASlices();
-
-
-	 /**
-	  *  @brief   merge kidney slices (separate)
-	  */
-	 void MergeKidneyMap(); 
-
-
-	 /**
-	  *  @brief   Merge the 3D-probability map 
-	  */
-	 void MergePancreasMap(); 
-
-
-
-// ***** Modelling Utilities ****** ///
-protected slots:
-
-
      // ******** Modelling ************** // 
     
     /**
@@ -315,25 +241,7 @@ protected slots:
 protected slots:
 
 
-     /**
-      * @brief       Select the ground truth mask 
-      */
-     void SelectGroundTruthMask(const mitk::DataNode * node);
-
-
-	 /** 
-	  *  @brief      Select the compared segment 
-	  */
-	 void SelectSegmentToEvaluate(const mitk::DataNode * node); 
-
-
-	 /**
-	  *  @brief      Start evaluation
-	  *              Compare the ground truth mask and segment 
-	  *  @param      return: VOE , DSC , Hauffdistance , Jaccard Index
-	  */
-	 void StartSegmentationEvaluation(); 
-
+    
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -378,78 +286,6 @@ protected slots:
 /////////////////////////////////////// TOOLBOX ///////////////////////////////////////////////////////////////////////
 
 
-	/**
-	 * @brief   create mesh with defined number of landmarks from binary image
-	 * @param   load a set of binary images 
-	 *          introduce inline functions: 
-	 *                vtkPolyData* createMeshFromBinaryImage( AtlasImageType::Pointer mask )
-	 *                vtkPolyData* remeshSurface( vtkPolyData* surfacePoly, ... params )
-	 * @param   migrate from mitkACVD
-	 */
-	void GenerateCorrespondingMeshFromBinaryImage(); 
-
-
-	/**
-	 * @brief   crop kidneys from label data   
-	 * @param   create the labels for region of interest 
-	 *          save the bounding index to the file name 
-	 */
-	void FilterRegionOfInterest(); 
-
-
-	/**
-	 * @brief  crop the image with the defined axes - start index
-	 * @param  load image from  fixImg_TreeNode
-	 * @param     user define x_lower / x_upper ; y_lower / y_upper; z_lower / z_upper
-	 *            write output image name with "_cp_"
-	 */
-	void CropImageWithDefinedAxes(); 
-
-
-	/**
-	 * @brief  reflect mesh for kidney_correspondence establishment 
-	 * @param  input mesh_samples 
-	 *         output mirrored mesh_samples
-	 */
-	void PolyDataReflectionX(); 
-
-
-	/**
-	 * @brief  reflect mesh for kidney_correspondence establishment
-	 * @param  input mesh_samples
-	 *         output mirrored mesh_samples
-	 */
-	void PolyDataReflectionY();
-
-
-	/**
-	 * @brief  reflect mesh for kidney_correspondence establishment
-	 * @param  input mesh_samples
-	 *         output mirrored mesh_samples
-	 */
-	void PolyDataReflectionZ();
-
-
-	/**
-	 * @brief  separate left & right kidneys of mask image 
-	 * @param  output: maskName_left.nrrd with the same size, origin, spacing Using connectedComponentFilter 
-	 */
-	void SeparateMasks(); 
-
-
-	/** 
-	 * @brief    check the GT boundary size and index 
-	 */
-	void CheckMaskBoundary(); 
-
-
-	/**
-	 * @brief  compute the ROI boundary from mask and then cropping 
-	 */
-	void ComputeAndCropROI(); 
-
-
-
 protected:
 
 
@@ -466,12 +302,6 @@ protected:
 	 *  @brief  load mean shape from local directory
 	 */
 	void loadDeformShapeFromLocal();
-
-
-	/**
-	 *  @brief  load ground truth shape for pre-training GMM and PriorProbs in initial Deform()
-	 */
-	void loadGroundTruthShapeForPreTraining(); 
 
 
 	/**
@@ -501,27 +331,6 @@ protected:
 	vtkPolyData* remeshSurface(vtkPolyData* surfacePoly, int numVertices);
 	
 
-	void addImageToNode(AtlasImageType::Pointer img, std::string imgName, bool visable); 
-
-
-	void addCharImageToNode(Image3DType::Pointer img, std::string imgName, bool visable);
-
-
-	void addPolyToNode(vtkPolyData* poly, std::string meshName, bool visable); 
-
-
-	void CenterOfMassToOrigin(std::vector< vtkSmartPointer< vtkPolyData >> &m_meshes, bool weighting);
-
-
-	void visualizeDatasets(std::vector< vtkSmartPointer< vtkPolyData > > &m_datasets, std::string name0, bool visible);
-
-
-	void writeAtlasImage(AtlasImageType::Pointer img, std::string writeName); 
-
-
-	void writeChar3DImage(Image3DType::Pointer img, std::string writeName); 
-
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
  
@@ -541,20 +350,9 @@ protected:
 	void ResetPolyData( vtkSmartPointer< vtkPolyData > poly ); 
 
 
-	/**
-	 * @brief   write out poly data 
-	 */
-	void WriteOutPolyData(vtkSmartPointer< vtkPolyData > poly, std::string fileName); 
+//////////////////////////////////////////////////////////////////////////////////////////
 
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	/**
-	 * @brief   generate slices with the fimeName, sliceMode, write into the folder 
-	 */
-	void generateSlicesWithMode(std::string fileName, std::string sliceMode, Image3DType::Pointer img);
-
-
+	
 	//************ segmentation member ***********//
 
 	
@@ -577,8 +375,7 @@ protected:
 	AtlasImageType::Pointer m_probMap;              /**> current probability map for segmentation **/
 	vtkSmartPointer< vtkPolyData > m_probShape;     /**> probability shape for initial localization , but not necessary**/
 	vtkSmartPointer< vtkPolyData > m_deformedShape; /**> deformed shape**/
-	vtkSmartPointer< vtkPolyData > m_preTrainShape; /**> GT shape for pre-training **/
-
+	
 	QDir* m_modelsDir;	                            /**> J:/IGDMedApp_VS12/build/bin/Release/Models **/
 
 	mitk::DataNode::Pointer m_visualizationSurfaceNode;	// node to store the adapted model. This node can then be used by other plugins.
