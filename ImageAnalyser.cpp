@@ -1,20 +1,3 @@
-// ==================================================================== //
-//																		//
-// Filename: ImageAnalyser.cpp					        			    //
-//																		//
-// Author:	Fraunhofer Singapore 			                //
-//																		//
-// ===================================================================	//
-//																		//
-// Short description:													//
-// Provides functionality for searching points of interest in an image	//
-// -------------------------------------------------------------------	//
-//																		//
-// Creation Date	: 15.06.2009	Marius Erdt							//
-// Modified     	: 10.08.2009	Marius Erdt							//
-//												
-// Modified             : 2017-2018     JINGTING MA
-// ===================================================================	//
 
 // local includes
 #include "ImageAnalyser.h"
