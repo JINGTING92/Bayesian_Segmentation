@@ -2,7 +2,7 @@
 //																		//
 // Filename: ImageAnalyser.cpp					        			    //
 //																		//
-// Author:	Fraunhofer Institute for Computer Graphics (IGD)			//
+// Author:	Fraunhofer Singapore 			                //
 //																		//
 // ===================================================================	//
 //																		//
@@ -13,7 +13,7 @@
 // Creation Date	: 15.06.2009	Marius Erdt							//
 // Modified     	: 10.08.2009	Marius Erdt							//
 //												
-// Modified         : 2017-2018     Pancreas Segmentation is added
+// Modified             : 2017-2018     JINGTING MA
 // ===================================================================	//
 
 // local includes
@@ -40,11 +40,6 @@ ImageAnalyser::ImageAnalyser(mitk::DataNode::Pointer imageNode, AtlasImageType::
 
 	RescaleIntensityProbMap();  // get the largest component by the way 
 
-	//this->PriorProb_InROI = 0.0; 
-	//this->PriorProb_InNOI = 0.0; 
-	//this->PriorProb_OutROI = 0.0; 
-	//this->PriorProb_OutNOI = 0.0; 
-
 	this->PriorProb_ROI = 0.0; 
 	this->PriorProb_NOI = 0.0; 
 
@@ -56,13 +51,6 @@ ImageAnalyser::ImageAnalyser(mitk::DataNode::Pointer imageNode, AtlasImageType::
 	this->NOI_MEAN = 30; 
 	this->NOI_STD = 100;  
 
-	////////////////////////////
-
-//	EnhanceIntensityWithProbMap(); 
-
-//	ComputeEdgeImage(m_itkImage);  // use m_maskImage -> edge value is too large : over 1,000 
-
-	cout << __FUNCTION__ << " PreprocessImage Done .. " << endl;
 }
 
 
@@ -649,83 +637,15 @@ void ImageAnalyser::computePriorProbs(vtkPolyData* _inputPoly, double _lambda, i
 	duplicator->Update();
 	m_NOIImage = duplicator->GetOutput();
 
-//	double* bounds = _inputPoly->GetBounds();
-//	itk::Point< double, 3 > leftPoint;  leftPoint[0] = bounds[0]; leftPoint[1] = bounds[2]; leftPoint[2] = bounds[4];
-//	itk::Point< double, 3 > rightPoint; rightPoint[0] = bounds[1]; rightPoint[1] = bounds[3]; rightPoint[2] = bounds[5];
-//
-//	AtlasImageType::IndexType leftCorner;  this->m_itkImage->TransformPhysicalPointToIndex(leftPoint, leftCorner);
-//	AtlasImageType::IndexType rightCorner; this->m_itkImage->TransformPhysicalPointToIndex(rightPoint, rightCorner);
-//
-//	leftCorner[0] -= 3; leftCorner[1] -= 3; leftCorner[2] -= 3;
-//	rightCorner[0] += 3; rightCorner[1] += 3; rightCorner[2] += 3;
-//
-//	for (int i = 0; i < 3; i++)
-//	{
-//		leftCorner[i] = max(m_itkImage->GetLargestPossibleRegion().GetIndex()[i], leftCorner[i]);
-//		rightCorner[i] = min((AtlasImageType::IndexValueType)m_itkImage->GetLargestPossibleRegion().GetSize()[i], rightCorner[i]);
-//	}
-//
 	itk::ImageRegionIterator< AtlasImageType > imgITK(m_itkImage, m_itkImage->GetRequestedRegion());
 	itk::ImageRegionIterator< AtlasImageType > img_NOI(m_NOIImage, m_NOIImage->GetRequestedRegion());
 	for (imgITK.GoToBegin(), img_NOI.GoToBegin(); !imgITK.IsAtEnd() && !img_NOI.IsAtEnd(); ++imgITK, ++img_NOI)
 	{
 		AtlasImageType::IndexType currIndex = img_NOI.GetIndex();
 
-		//if (currIndex[0] >= leftCorner[0] && currIndex[0] <= rightCorner[0]
-		//	&& currIndex[1] >= leftCorner[1] && currIndex[1] <= rightCorner[1]
-		//	&& currIndex[2] >= leftCorner[2] && currIndex[2] <= rightCorner[2])
-		//{
-		//	if (img_NOI.Get() > -10000) img_NOI.Set(-10000);
-		//	else img_NOI.Set(imgITK.Get());
-		//}
-
 		if (img_NOI.Get() > -10000) img_NOI.Set(-10000);
 		else img_NOI.Set(imgITK.Get());
 	}
-//
-//>>>>>>>>>>>>>>>>>>>>
-//
-//	std::vector< double > ProbNOIs;
-//	this->PriorProb_NOI = 0.0;
-//
-//	itk::ImageRegionIterator< AtlasImageType > imgNOI(m_NOIImage, m_NOIImage->GetRequestedRegion());
-//	for (imgNOI.GoToBegin(); !imgNOI.IsAtEnd(); ++imgNOI)
-//	{
-//		if (imgNOI.Get() < -1024) continue;
-//
-//		InternalPixelType gValue = imgNOI.Get();
-//
-//		double currOutROI = this->getGaussianProbOfROI(gValue);
-//		double currOutNOI = this->getGaussianProbOfNOI(gValue);
-//		double currProbNN = this->getPriorProbBasedOnNNMap(imgNOI.GetIndex());
-//
-//		if (_lambda == 0) currProbNN = 0.5;
-//
-//		double probTotal = currOutROI * currProbNN + currOutNOI * (1 - currProbNN);
-//
-//		if (probTotal == 0) continue;
-//
-//		ProbNOIs.push_back(currOutNOI * (1 - currProbNN) / probTotal);
-//		this->PriorProb_NOI += currOutNOI * (1 - currProbNN) / probTotal;
-//	}
-//
-//	if (ProbNOIs.size() == 0)
-//	{
-//		this->PriorProb_NOI = 0.0;
-//		this->PriorProb_NOI_STD = 0.0;
-//	}
-//	else
-//	{
-//		this->PriorProb_NOI /= ProbNOIs.size();
-//
-//		double sumNOI = 0.0;
-//		for (int i = 0; i < ProbNOIs.size(); i++)
-//			sumNOI += pow(ProbNOIs.at(i) - this->PriorProb_NOI, 2);
-//
-//		this->PriorProb_NOI_STD = sumNOI / ProbNOIs.size();
-//		this->PriorProb_NOI_STD = sqrt(this->PriorProb_NOI_STD);
-//	}
-//
 
 //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
@@ -872,19 +792,6 @@ bool ImageAnalyser::checkBoundary(itk::Point< double, 3 > _point, double _lambda
 	if (InROI >= 0.5 && OutNOI >= 0.5) return true; 
 	else return false; 
 
-	
-	//if (InROI >= this->PriorProb_ROI - this->PriorProb_ROI_STD // && InROI <= this->PriorProb_InROI + PROB_INROI_STD
-	//	&& InNOI <= this->PriorProb_NOI + this->PriorProb_NOI_STD // && InNOI >= this->PriorProb_InNOI - PROB_INNOI_STD && 
-	//	&& InROI - OutROI >= this->PriorProb_ROI_STD && OutNOI - InNOI >= this->PriorProb_NOI_STD)
-	//	inside = true;
-
-	//if (OutNOI >= this->PriorProb_NOI - this->PriorProb_NOI_STD // && OutNOI <= this->PriorProb_OutNOI + PROB_OUTNOI_STD
-	//	&& OutROI <= this->PriorProb_ROI + this->PriorProb_ROI_STD // && OutROI >= this->PriorProb_OutROI - PROB_OUTROI_STD 
-	//	&& OutNOI - InNOI >= this->PriorProb_NOI_STD && InROI - OutROI >= this->PriorProb_ROI_STD)
-	//	outside = true;
-
-	//if (inside == true && outside == true) return true; 
-	//else return false; 
 
 }
 
@@ -1085,11 +992,6 @@ void ImageAnalyser::EnhanceIntensityWithProbMap()
 		closer->UpdateLargestPossibleRegion();   // necessary 
 		closer->Update();                        // necessary 
 
-		/*typedef itk::ImageFileWriter< CharImageType > CharWriterType;
-		CharWriterType::Pointer charWriter = CharWriterType::New();
-		charWriter->SetInput(closer->GetOutput());
-		charWriter->SetFileName(m_nameSegImg + "_closer.nrrd");
-		charWriter->Update();*/
 
 		itk::ImageRegionIterator< CharImageType > it(closer->GetOutput(), closer->GetOutput()->GetRequestedRegion());
 		for (it.GoToBegin(); !it.IsAtEnd(); ++it)
@@ -1180,82 +1082,11 @@ void ImageAnalyser::EnhanceIntensityWithProbMap()
 	paster->SetDestinationIndex(startIndex);
 	paster->Update();
 
-	/////////////////////////////////////////////// Added ///////////////////////////////////////////
-
-	/*AtlasImageType::Pointer croppedImg = AtlasImageType::New();
-	croppedImg->SetRegions(newRegion);
-	croppedImg->SetOrigin(origin);
-	croppedImg->SetSpacing(m_itkImage->GetSpacing());
-	croppedImg->Allocate();
-	croppedImg->FillBuffer(0);
-
-	PasteFilterType::Pointer pasterNew = PasteFilterType::New();
-	pasterNew->SetSourceImage(m_itkImage);
-	pasterNew->SetSourceRegion(extractRegion);
-	pasterNew->SetDestinationImage(croppedImg);
-	pasterNew->SetDestinationIndex(startIndex);
-	pasterNew->Update();
-	croppedImg = pasterNew->GetOutput();
-
-	AtlasImageWriterType::Pointer writerNew = AtlasImageWriterType::New();
-	writerNew->SetInput(croppedImg);
-	writerNew->SetFileName(this->m_nameSegImg + "_ROI.nrrd");
-	writerNew->Update();*/
-
 	//////////////////////////////////////////////// Added //////////////////////////////////////////////////
 
 	m_maskImage = paster->GetOutput();
 
-	//AtlasImageWriterType::Pointer writer = AtlasImageWriterType::New();
-	//writer->SetInput(m_maskImage);
-	//writer->SetFileName(this->m_nameSegImg + "_ROI_L.nrrd");
-	//writer->Update();
-
 	ComputeEdgeImage(m_maskImage);
-
-	// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-
-	/*AtlasImageWriterType::Pointer writer = AtlasImageWriterType::New();
-	writer->SetInput(m_maskImage);
-	writer->SetFileName(this->m_nameSegImg + "mask.nrrd");
-	writer->Update();*/
-
-
-	/*AtlasImageWriterType::Pointer writer0 = AtlasImageWriterType::New();
-	writer0->SetInput(m_edgeImage);
-	writer0->SetFileName(this->m_nameSegImg + "edge.nrrd");
-	writer0->Update();*/
-
-	// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-	//typedef itk::Function::CustomColormapFunction<CharImageType::PixelType, ColorImageType::PixelType> ColormapType;
-	//ColormapType::ChannelType redChannel;
-	//ColormapType::ChannelType greenChannel;
-	//ColormapType::ChannelType blueChannel;
-	//redChannel.push_back(static_cast<ColormapType::RealType>(0.231373));
-	//greenChannel.push_back(static_cast<ColormapType::RealType>(0.298039));
-	//blueChannel.push_back(static_cast<ColormapType::RealType>(0.752941));
-	//redChannel.push_back(static_cast<ColormapType::RealType>(1));
-	//greenChannel.push_back(static_cast<ColormapType::RealType>(1));
-	//blueChannel.push_back(static_cast<ColormapType::RealType>(1));
-	//redChannel.push_back(static_cast<ColormapType::RealType>(0.705882));
-	//greenChannel.push_back(static_cast<ColormapType::RealType>(0.0156863));
-	//blueChannel.push_back(static_cast<ColormapType::RealType>(0.14902));
-	//ColormapType::Pointer colormap = ColormapType::New();
-	//colormap->SetRedChannel(redChannel);
-	//colormap->SetGreenChannel(greenChannel);
-	//colormap->SetBlueChannel(blueChannel);
-	//// Setup conversion
-	//typedef itk::ScalarToRGBColormapImageFilter<CharImageType, ColorImageType> RGBFilterType;
-	//RGBFilterType::Pointer rgbfilter = RGBFilterType::New();
-	//rgbfilter->SetInput(m_maskImage);
-	//rgbfilter->SetColormap(colormap);
-	//typedef itk::ImageFileWriter< ColorImageType > WriterType; 
-	//WriterType::Pointer rgbWriter = WriterType::New(); 
-	//rgbWriter->SetInput(rgbfilter->GetOutput());
-	//rgbWriter->SetFileName("rgbNew.nrrd"); 
-	//rgbWriter->Update(); 
 
 }
 
@@ -1544,24 +1375,6 @@ void ImageAnalyser::AutoSetKidneyModelConstraints(mitk::Surface::Pointer surface
 	for (ptId = 0; ptId < numPts; ptId++)
 	{
 		double* tdata = constraints->GetTuple(ptId);
-
-		//// set HU min and max values to the quantiles calculated from the model position
-		//if (currMin > fixedMin && currMin < fixedMax)
-		//{
-		//	tdata[2] = currMin; // get the larger minHU
-		//}
-		//else
-		//{
-		//	tdata[2] = fixedMin;
-		//}
-		//if (currMax > fixedMin && currMax < fixedMax)
-		//{
-		//	tdata[3] = currMax;   // get the smaller maxHU 
-		//}
-		//else
-		//{
-		//	tdata[3] = fixedMax;
-		//}
 
 		tdata[2] = std::min(currMin, -(double)20.0);
 		tdata[3] = currMax;
