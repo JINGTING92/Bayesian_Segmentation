@@ -363,13 +363,9 @@ protected:
 
 	vtkSmartPointer<vtkPolyData>	m_icpPoly;		  /**> reference shape - an affine transformed version of the initial model **/
 	vtkSmartPointer<vtkPolyData>	m_structurePoly;  /**> stores the found boundary candidates  **/
-	vtkSmartPointer<vtkPolyData>    m_reconsRightKidney;  /**> stores the second data as the template for right kidney segmentation **/
-
+	
 	mitk::Surface::Pointer m_icpSurface;			/**> mitk surface to store m_icpPoly **/ 
 	mitk::Surface::Pointer m_structureSurface;		/**> mitk surface to store m_structurePoly **/
-
-	AtlasImageType::Pointer m_GTMask;               /**> ground truth mask for evaluation **/
-	AtlasImageType::Pointer m_SegmentMask;          /**> segment for evaluation **/
 
 	AtlasImageType::Pointer m_segImage;             /**> loaded seg image  **/
 	AtlasImageType::Pointer m_probMap;              /**> current probability map for segmentation **/
@@ -409,26 +405,4 @@ protected:
 };
 
 #endif // _SegmentationView_H_INCLUDED
-
-
-/** Image Gravity Load Shape **/
-//typedef itk::ImageMomentsCalculator< AtlasImageType > ImageCalculatorType;
-//ImageCalculatorType::Pointer calculator = ImageCalculatorType::New();
-//calculator->SetImage(m_imageAnalyser->GetMaskImage());
-//calculator->Compute();
-//double gravity[3];
-//gravity[0] = calculator->GetCenterOfGravity()[0];
-//gravity[1] = calculator->GetCenterOfGravity()[1];
-//gravity[2] = calculator->GetCenterOfGravity()[2];
-//std::cout << __FUNCTION__ << " gravity from calculator = " << gravity[0] << " , " << gravity[1] << " , " << gravity[2] << std::endl;
-//mitk::BaseGeometry::Pointer modelGeometry = m_currentSurfaceNode->GetData()->GetTimeGeometry()->GetGeometryForTimeStep(0);
-//mitk::Point3D x;
-//x[0] = gravity[0];
-//x[1] = gravity[1];
-//x[2] = gravity[2];
-//GetRenderWindowPart()->SetSelectedPosition(x);
-//mitk::Vector3D t;
-//t = x - modelGeometry->GetCenter();
-//modelGeometry->Translate(t);
-//modelGeometry->Modified();
 
