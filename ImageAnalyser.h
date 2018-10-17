@@ -120,60 +120,6 @@ public:
 
 
 	/**
-	 *  @brief                  search boundary landmark within candidate boundary or normal profiles
-	 *                          reweights the probability of each voxel iteratively with Maximum A Posterior 
-	 *                          p( label | I ) -> p( I | label ) * p( label ) where the prior p( label ) is fixed
-	 *  @param                  do not use any prior parameters
-	 */
-	void SearchPointsOfInterest(vtkPolyData* modelPoly, vtkPolyData* structurePoly); 
-
-	
-   /**
-	* @brief					calls different methods of boundary detection depending on the organID and the number of layers.
-	* @param modelPoly			the reference polydata of the model
-	*        structurePoly		the polydata to store the boundary points          (point ids and number of points must be the same as in the reference polydata)
-	*        alphaWeights		external point weights for each point in the model (point ids must be the same as in the reference polydata)
-	*        internalWeights	internal point weights for each point in the model (point ids must be the same as in the reference polydata)
-	*        organID			organ identifier
-	*/
-	void SearchPointsOfInterestKidney(vtkPolyData* modelPoly, vtkPolyData* structurePoly, vtkFloatArray* alphaWeights, vtkFloatArray* internalWeights);
-
-
-	/**
-	* @brief				Sets model constraints automatically by cutting out the image under the current position of the model
-	*						and calculating the 25% and 75% quantiles.
-	*                       These quantiles are set as lower and upper HU values in the models.
-	* @param     surface		   the model (layer = 1 by default)
-	*            organID		   the id of the organ
-	*/
-	void AutoSetKidneyModelConstraints(mitk::Surface::Pointer surface);
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-	/**
-	* @brief					calls different methods of boundary detection depending on the organID and the number of layers.
-	* @param modelPoly			the reference polydata of the model
-	*        structurePoly		the polydata to store the boundary points          (point ids and number of points must be the same as in the reference polydata)
-	*        alphaWeights		external point weights for each point in the model (point ids must be the same as in the reference polydata)
-	*        internalWeights	internal point weights for each point in the model (point ids must be the same as in the reference polydata)
-	*        organID			organ identifier
-	*/
-	void SearchPointsOfInterestPancreas(vtkPolyData* modelPoly, vtkPolyData* structurePoly, vtkFloatArray* alphaWeights, vtkFloatArray* internalWeights);
-
-
-	/**
-	* @brief				Sets model constraints automatically by cutting out the image under the current position of the model
-	*						and calculating the 25% and 75% quantiles.
-	*                       These quantiles are set as lower and upper HU values in the models.
-	* @param     surface		   the model (layer = 1 by default)
-	*            organID		   the id of the organ
-	*/
-	void AutoSetPancreasModelConstraints(mitk::Surface::Pointer surface);
-
-
-	/**
 	 *  @brief    landmark deformation considering of the probability inside and outside
 	 *  @param    pass the current shape, probability map from NN, output the deformed shape 
 	 *            the probability of ROI and NOI needs pre-training 
@@ -248,54 +194,6 @@ protected:
 	 */
 	void RescaleIntensityProbMap();
 
-
-
-	/**
-  	 * @brief    Enhance intensity within region of prob_map
-	 *           new_intensity = intensity + 300
-	 * @param    Previous kidney intensity range : -30 - 170
-	 */
-	void EnhanceIntensityWithProbMap();
-
-
-
-	/**
-	 * @brief	Computes an edge image based on the m_itkImage. 
-	 * @param   A sobel filter mask is used.
-	 */
-	void ComputeEdgeImage(AtlasImageType::Pointer _img);
-
-
-
-	/**
-	 * @brief	Initializes the internal filter mask with sobel values.
-	 */
-	void InitEdgeMatrix();
-
-
-	/**
-	 * @brief			    Gets the image intensity at a given point in physical space
-	 * @param  point		the point coordinates in itk physical space (in mm)
-	 *         intensity	the intensity at the point position
-	 *         image		the itk input image
-	 */
-	void getPixelIntensity(double point[3], double& intensity, AtlasImageType::Pointer image);
-
-
-	/**
-	 * @brief	  Iterates over a neighborhood of a given voxel and checks whether at least 
-	 *                     1/4 of all voxels are between HUmin and HUmax.
-	 *				       FIX: Percentage should be a parameter of this function
-	 * @param     point	   the point coordinates in itk physical space (in mm)
-	 * @return		       true if the condition is met, false otherwise
-	 */
-	bool pointIsInside(double point[3], float& HUmin, float& HUmax);
-
-
-	bool pointIsOnBoundary(double point[3]); 
-
-
-
 	mitk::Image::Pointer	m_mitkImage;	// original image in mitk format
 
 	mitk::DataNode::Pointer m_imageNode;	// node containing the original image
@@ -314,12 +212,6 @@ protected:
 
 
 	static const int s = 3; // for edge detection mask
-
-	// edge image of m_itkImage in itk format
-	float mX[s][s][s];
-	float mY[s][s][s];
-	float mZ[s][s][s];
-
 
 	//>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
