@@ -53,7 +53,6 @@ SegmentationView::SegmentationView()
 	: QmitkAbstractView(), m_shapeModel(nullptr)
 {
 	m_imageAnalyser   = 0;
-	m_AffineSurfaceInteractor = 0;
 	m_currentSurfaceNode = 0;
 
 	m_icpPoly = 0;
@@ -482,9 +481,6 @@ void SegmentationView::Deform()  /* pass m_deformedShape to m_surfaceNode */
 	}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	m_AffineSurfaceInteractor = AffineSurfaceInteractor::New("AffineInteractions ctrl-drag", m_currentSurfaceNode);
-	mitk::GlobalInteraction::GetInstance()->AddInteractor(m_AffineSurfaceInteractor);
 
 	m_currentSurfaceNode->Modified();
 	m_currentSurfaceNode->SetColor(0.0, 1.0, 1.0);
