@@ -5,12 +5,11 @@
 // class / plugin_related 
 #include "ui_SegmentationViewControls.h"
 
-#include "AffineSurfaceInteractor.h"
-#include "SurfaceDeformInteractor.h"
+
 #include "ImageAnalyser.h"
 #include "ModelDeformator.h"
 #include "ShapeModel.h"
-#include "ShapeModelProjection.h"
+
 
 #include "RobustKPCA.h"
 #include "StatisticalUtilities.h"
