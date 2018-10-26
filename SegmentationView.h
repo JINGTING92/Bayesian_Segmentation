@@ -7,7 +7,6 @@
 
 
 #include "ImageAnalyser.h"
-#include "ModelDeformator.h"
 #include "ShapeModel.h"
 
 
