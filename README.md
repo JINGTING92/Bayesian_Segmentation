@@ -5,7 +5,7 @@ The project is built on the public source MITK, a unified framework consisting o
 SegmentationView.cpp: the entrance of the program, which connects with a QT interface. 
 ImageAnalyser.cpp: the main codes are here.
 
-############################################################################################################################
+#################################################################################################
 
 <SegmentationView.cpp>
 
@@ -19,7 +19,7 @@ A. statistical shape modeling (optional):
 B. load test image to be segmented: 
    SegmentationView::ImageSelected() : denote as m_segImage 
    
-############################################################################################################################
+#################################################################################################
    
 Step 1: load the probability score map and initialize the shape model 
 
@@ -38,7 +38,7 @@ run SegmentationView::Deform()
     
 (6) re-initialize the window of MITK (optional)
 
-##########################################################################################################################
+#################################################################################################
 
 Step 2: Perform the Bayesian model for segmentation 
 
